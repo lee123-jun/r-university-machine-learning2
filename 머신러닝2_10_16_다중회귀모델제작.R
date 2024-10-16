@@ -1,3 +1,4 @@
+
 library(MASS)
 #install.packages("car")
 library(car)
@@ -39,7 +40,7 @@ y_test <- as.numeric(y_test)
 
 beta <- rep(0, ncol(x_train))
 
-# °æ»çÇÏ°­¹ý ÄÚµå 7ÁÖÂ÷ ¾ÐÃàÆÄÀÏ¿¡ Á¸Àç
+# ê²½ì‚¬í•˜ê°•ë²• ì½”ë“œ 7ì£¼ì°¨ ì••ì¶•íŒŒì¼ì— ì¡´ìž¬
 gradient_descent <- function(X, y, beta, learning_rate, num_iterations) {
   m <- nrow(X)
   cost_history <- numeric(num_iterations)
@@ -57,46 +58,56 @@ gradient_descent <- function(X, y, beta, learning_rate, num_iterations) {
   return(list(beta = beta, cost_history = cost_history))
 }
 
-#Hyper Parameters Á¤ÀÇ
+#Hyper Parameters ì •ì˜
 learning_rate <- 0.0001
 num_iterations <- 10000
 
-# °æ»ç ÇÏ°­¹ýÀ¸·Î µµÃâÇÑ Parameters µµÃâ
+# ê²½ì‚¬ í•˜ê°•ë²•ìœ¼ë¡œ ë„ì¶œí•œ Parameters ë„ì¶œ
 gd_result <- gradient_descent(x_train, y_train, beta, learning_rate, num_iterations)
 final_beta <- gd_result$beta
 cost_history <- gd_result$cost_history
 
-# ÃÖÁ¾ º£Å¸°ªÀÌ ÃÖÁ¾ °¡ÁßÄ¡ÀÌ´Ù
-# °æ»ç ÇÏ°­¹ý ±×·¡ÇÁ
+# ìµœì¢… ë² íƒ€ê°’ì´ ìµœì¢… ê°€ì¤‘ì¹˜ì´ë‹¤
+# ê²½ì‚¬ í•˜ê°•ë²• ê·¸ëž˜í”„
 plot(1:num_iterations, cost_history, type = "l", col = "blue", x_lab = "Iteration", 
      ylab = "Cost", main = "Cost Function over Iterations")
 
-# Çà·ÄÀÇ °ö¼À
+# í–‰ë ¬ì˜ ê³±ì…ˆ
 y_pred <- X_test%*% final_beta
 
-# ÀÜÂ÷ Á¦°öÇÕ
+# ìž”ì°¨ ì œê³±í•©
 ss_res <- sum((y_test-y_pred)^2)
 
-# ÃÑ Á¦°öÇÕ
+# ì´ ì œê³±í•©
 ss_total <- sum((y_test-mean(y_test))^2)
 
-# °áÁ¤ °è¼ö
+# ê²°ì • ê³„ìˆ˜
 r2_test <- 1 -(ss_res/ ss_total)
 
-# MSE ¹× RMSE °è»ê
+# MSE ë° RMSE ê³„ì‚°
 mse_test <- mse_function(final_beta, X_test, y_test)
 rmse_test <- sqrt(mse_test)
 
 print(paste("Mean Squared Error(MSE) on Test Set:", round(mse_test, 3)))
 print(paste("Root Mean Squared Error(RMSE) on Test Set:", round(rmse_test, 3)))
-print(paste("R-squared (R©÷) on Test Set:", round(r2_test,3)))
+print(paste("R-squared (RÂ²) on Test Set:", round(r2_test,3)))
 
-#pvalue, °ËÁõ, º¯¼ö¼±ÅÃÀÌ ºüÁ®ÀÖ´Ù ¿Ö?,
-# Åë°èÀû ¹æ¹ý¿¡´Â ´Ù¾çÇÑ°ËÁõ + º¯¼ö¼±ÅÃ(ÀüÁø,ÈÄÁø,ÁßÀ§ µî)
-# º¯¼öµé¿¡ ´ëÇÑ Æ¯Â¡À» ÆÄ¾ÇÇØ¼­ ÇÐ½ÀÀ» ÇÏ±â ¶§¹®¿¡ Á¶±Ý¾¿ ´Ù¸¦ ¼ö ÀÖ´Ù.
-# Åë°èÀûÀÎ ¹æ¹ýÀ¸·Î µ¹¸®¸é °ª µ¿ÀÏ ÇÏÁö¸¸ ¸Ó½Å·¯´×À¸·Î ÇÏ¸é °ªÀÌ ´Ù¸£°Ô ³ª¿Â´Ù
-# ±×·¡µµ Å©°Ô ¹üÁÖ¸¦ ¹þ¾î³ªÁö ¾Ê´Â´Ù.
-
+# pvalue, ê²€ì¦, ë³€ìˆ˜ì„ íƒì´ ë¹ ì ¸ìžˆë‹¤ ì™œ?,
+# í†µê³„ì  ë°©ë²•ì—ëŠ” ë‹¤ì–‘í•œê²€ì¦ + ë³€ìˆ˜ì„ íƒ(ì „ì§„,í›„ì§„,ì¤‘ìœ„ ë“±)
+# ë³€ìˆ˜ë“¤ì— ëŒ€í•œ íŠ¹ì§•ì„ íŒŒì•…í•´ì„œ í•™ìŠµì„ í•˜ê¸° ë•Œë¬¸ì— ì¡°ê¸ˆì”© ë‹¤ë¥¼ ìˆ˜ ìžˆë‹¤.
+# í†µê³„ì ì¸ ë°©ë²•ìœ¼ë¡œ ëŒë¦¬ë©´ ê°’ ë™ì¼ í•˜ì§€ë§Œ ë¨¸ì‹ ëŸ¬ë‹ìœ¼ë¡œ í•˜ë©´ ê°’ì´ ë‹¤ë¥´ê²Œ ë‚˜ì˜¨ë‹¤
+# ê·¸ëž˜ë„ í¬ê²Œ ë²”ì£¼ë¥¼ ë²—ì–´ë‚˜ì§€ ì•ŠëŠ”ë‹¤.
+# ë¨¸ì‹ ëŸ¬ë‹ íšŒê·€
+# í†µê³„ì™€ ë¹„êµí–ˆì„ë•Œ 5ê°œì˜ ê²€ì¦(ì„ í˜•ì„±, ë…ë¦½ì„±...)ê°€ ì—†ë‹¤ í•˜ì§€ë§Œ ê·¸ê²ƒì„ í•´ì£¼ëŠ” ê²ƒì´ ê²°ê³¼ ìœ ì¶”ì— ìœ ë¦¬í•˜ë‹¤
+# ëª¨ë‘ ë¹„êµí•´ì£¼ë©´ íž˜ë“œë‹ˆê¹ vifê°’ë§Œ ì´ìš©í•´ì„œ ì¶”ì¶œì„ í•´ì£¼ì—ˆë‹¤
+# ë¨¸ì‹ ëŸ¬ë‹ì´ë‹ˆê¹ ë°ì´í„°ë¥¼ í•™ìŠµ80ê³¼ ê²€ì¦20ìœ¼ë¡œ ë‚˜ëˆ ì•¼ í•œë‹¤
+# í•™ìŠµì„ ìœ„í•´ì„œ 1ì´ëž€ ê°’ì„ ë„£ì–´ì¤¬ë‹¤ ê°’ì´ íšŒê·€ëª¨ë¸ë¡œ ë“¤ì–´ê°ˆ ë•Œ mse functionì´
+# cost fuctionì´ ìž‘ì•„ì•¼ ì¢‹ì€ ëª¨ë¸ì´ë‹¤. í•œë²ˆì— ì°¾ê¸° ì–´ë µê³  ì´ê²ƒì€ í•™ìŠµì´ë©°
+# ì›¨ì´íŠ¸ ê°’ì„ ê³„ì† ì¤„ì—¬ë‚˜ê°€ì•¼ í•œë‹¤. ê²½ì‚¬í•˜ê°•ë²•ì„ ì¶”ê°€í•´ì„œ ì™”ë‹¤ë¦¬ ê°”ë‹¤ë¦¬ í•œë‹¤.
+# ì•½ 10000ë²ˆì˜ í•™ìŠµì„ í•œê±°ê³  ê³„ì† ì›¨ì´íŠ¸ë¥¼ ìˆ˜ì •í•˜ê³  ì–´ë–¤í•œ ê²°ê³¼ì— ë„ë‹¬ì„ í–ˆë‹¤
+# ë² íƒ€ê°’ì´ ë‚˜ì˜¨ë‹¤ ê·¸ ê°’ì„ ê²€ì¦ë°ì´í„°ì— ë„£ì–´ì„œ y_preidì„ êµ¬í•˜ê³  ì‹¤ì œ yì„ ë¹¼ì„œ ê²€ì¦ì„ í•œë‹¤ ?
+# ì´ëŸ° íë¦„ë§Œ ì´í•´í•˜ë¼ ë’¤ì—êº¼ ì´í•´ ëª» í•œë‹¤. ëª¨ë“  ë¨¸ì‹ ëŸ¬ë‹, ì¸ê³µì§€ëŠ¥ ê¸°ë²•ì´
+# ì´ê²ƒë“¤ì— ê¸°ì´ˆë¥¼ í•´ì„œ ë§Œë“¤ì–´ì¡Œë‹¤
 
 
 
